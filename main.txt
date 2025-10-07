@@ -1,3 +1,5 @@
 This is the main branch
 бла бла бла новый текст
 Изменение из ветки main
+Изменение из ветки conflict-branch
+

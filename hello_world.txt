@@ -1,1 +1,141 @@
-Hello, World!
+import math
+from matplotlib import pyplot as plt
+
+def plot3(name, axisX, axisY, x1, y1, label1, x2, y2, label2, x3, y3, label3):
+  plt.plot()
+  plt.plot(x1, y1, color='blue', label=label1)
+  plt.plot(x2, y2, color='red', label=label2)
+  plt.plot(x3, y3, color='green', label=label3)
+  plt.xlabel(axisX)
+  plt.ylabel(axisY)
+  plt.title(name)
+  plt.grid(True)
+  plt.legend()
+  plt.show()
+
+def function(x):
+  return 1/(2*x**2+1)
+
+def periodic(x):
+  return math.sin(2*math.pi*x)
+
+a=-1
+b=1
+x_razr = a + (b-a)/3
+
+def razryvnaya(x):
+  if x < x_razr:
+    return 1
+  else:
+    return 2
+
+def Integral(h):
+
+  x=[]
+  y=[]
+
+  for i in range(2*n+1):
+    x.append(a+i*h/2)
+    y.append(function(x[i]))
+
+  I_rectangle=0
+  for i in range(0,n):
+    I_rectangle+=y[2*i]*h
+
+  I_trapez=0
+  for i in range(0,n):
+    I_trapez+=(y[2*i]+y[2*i+2])*h/2
+
+  I_parabola=0
+  for i in range(0,n):
+    I_parabola+=(y[2*i]+4*y[2*i+1]+y[2*i+2])*h/6
+
+  return I_rectangle,I_trapez,I_parabola
+
+
+def Integral_trap(function_local,h):
+
+  x=[]
+  y=[]
+
+  for i in range(n+1):
+    x.append(a+i*h)
+    y.append(function_local(x[i]))
+
+  I_trapez=0
+  for i in range(n):
+    I_trapez+=(y[i]+y[i+1])*h/2
+
+  return I_trapez
+
+
+h=[]
+k=100
+
+I = math.sqrt(2)*math.atan(math.sqrt(2))
+
+er1=[]
+er2=[]
+er3=[]
+
+for n in range(10,k+10):
+
+  h.append((b-a)/(n))
+  i=n-10
+
+  I1,I2,I3=Integral(h[i])
+
+  er1.append(math.log(abs(I-I1)))
+  er2.append(math.log(abs(I-I2)))
+  er3.append(math.log(abs(I-I3)))
+
+  h[i]=math.log(h[i])
+
+
+plot3('график ошибок','ln(h)',"ln(R)",
+      h,er1,'прямоугольник',
+      h,er2,'трапеция',
+      h,er3,'парабола')
+
+
+print("Порядок точности для метода правого прямоугольника = ",
+      (er1[k-1]-er1[0])/(h[k-1]-h[0]))
+
+print("Порядок точности для метода трапеции = ",
+      (er2[k-1]-er2[0])/(h[k-1]-h[0]))
+
+print("Порядок точности для метода Симпсона = ",
+      (er3[k-1]-er3[0])/(h[k-1]-h[0]))
+
+
+# ---- пункт 4 задания ----
+
+h2=[]
+er_f1=[]
+er_f2=[]
+er_f3=[]
+
+I1_exact = math.sqrt(2)*math.atan(math.sqrt(2))
+I2_exact = 0
+I3_exact = (x_razr-a)*1 + (b-x_razr)*2
+
+for n in range(10,k+10):
+
+  h_step=(b-a)/n
+
+  h2.append(math.log(h_step))
+
+  I1=Integral_trap(function,h_step)
+  I2=Integral_trap(periodic,h_step)
+  I3=Integral_trap(razryvnaya,h_step)
+
+  er_f1.append(math.log(abs(I1_exact-I1)))
+  er_f2.append(math.log(abs(I2_exact-I2)))
+  er_f3.append(math.log(abs(I3_exact-I3)))
+
+
+plot3('трапеции для трех функций',
+      'ln(h)',"ln(R)",
+      h2,er_f1,'исходная функция',
+      h2,er_f2,'периодическая',
+      h2,er_f3,'разрывная')
